@@ -35,19 +35,6 @@ def summarize_articles(articles):
 
 	return summarize(sentence_ranks, sentence_tokens, 6)
 
-
-
-#def parse_arguments():
-#	parser = argparse.ArgumentParser()
-#	parser.add_argument("filepath", help="File name of text to summarize")
-#	parser.add_argument(
-#		"-l", "--length", default=6, help="Number of sentences to return"
-#	)
-#	args = parser.parse_args()
-#
-
-#	return args
-
 #sanitizes the input.
 def sanitize_input(data):
 	replace = {ord("\f"): " ", ord("\t"): " ", ord("\n"): " ", ord("\r"): None}
