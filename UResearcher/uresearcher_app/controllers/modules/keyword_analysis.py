@@ -29,12 +29,12 @@ def generate_grant_keywords(text):
 			stringtest += ' ' + v
 			
 	words = nltk.tokenize.word_tokenize(stringtest)
-	
-	
+
+
 	blobs = TextBlob(text)
 	blobphrases = blobs.noun_phrases
-	
-	
+
+
 	#Singular Word Frequencies.
 	fdist1 = nltk.FreqDist(words)
 
@@ -43,7 +43,10 @@ def generate_grant_keywords(text):
 	found = []
 	for val in fdist1.most_common(15):
 		found.append(val[0])
-		
+
+
+
+
 	for val in blobphrases:
 		found.append(val)
 

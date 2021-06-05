@@ -19,7 +19,8 @@ uresearcher_app/uresearcher.db
 
 # venv
 *venv*/
+**/node_modules/
+.vscode/
+**/.idea/
+**/venv/
 
-# others
-uresearcher_app/static/node/node_modules/
-uresearcher_app/static/node/v8-compile-cache-0/

@@ -1,16 +1,15 @@
+import nltk
 from gensim.models import Word2Vec
 from gensim.test.utils import common_texts
 from sklearn.manifold import TSNE
 from nltk import tokenize
 from .preprocessing import sentence_parsing
-#from flask import jsonify
-
 import multiprocessing
-import time
+
+
 
 ## Aside from using the abstract/fulltext of an article, we need to split them into sentences before splitting into words
 def get_wordvecs(articles):
-
 
 	#if len(articles) < 10:
 	#	print("\n\nLKA CHECKED")
@@ -48,11 +47,12 @@ def get_wordvecs(articles):
 			#and feeding articles/sentences into the model in groups may be required for 
 			#fast multi-threading when the datasets are huge. 
 			article_sentences = tokenize.sent_tokenize(article['abstract'])
-			
+
+
 			for curr_sentence in article_sentences:
 			
 				preproc = sentence_parsing(curr_sentence)
-			
+
 				#sentences.append(tokenize.word_tokenize(preproc))
 				#print(tokenize.word_tokenize(curr_sentence))
 				
@@ -60,27 +60,43 @@ def get_wordvecs(articles):
 				sentences.append(preproc)
 				
 
-	
-	model = Word2Vec(sentences, min_count=3, workers=cores-1)
+	#https://radimrehurek.com/gensim/models/word2vec.html
+	#model = Word2Vec(sentences, min_count=3,vector_size=1000,max_vocab_size=2000,max_final_vocab=None,sorted_vocab=1,  workers=cores-1)
+	model = Word2Vec(sentences, min_count=3, vector_size=100,sorted_vocab=1,
+					 workers=cores - 1)
 	#model.build_vocab(sentences, progress_per=10000)
-
 
 	return model.wv
 
-def get_2d_projection(articles):
+def get_vocablist(articles,filter):
 	vectors = get_wordvecs(articles)
+	vocab=[]
+	for word in vectors.index_to_key:
+		if filter.isValid(word):
+			vocab.append(word)
 
-	vocab = [word for word in vectors.vocab]
+	return vocab
+
+
+def get_2d_projection(articles,filter):
+	vectors = get_wordvecs(articles)
+	vocab = []
+	for word in vectors.index_to_key:
+		if filter.isValid(word):
+			vocab.append(word)
+
 	wordvecs = []
 	for word in vocab:
 		wordvecs.append(vectors[word])
 
+	#print("start compressing")
 	embedded = TSNE(n_components=2).fit_transform(wordvecs)
+	#print("end compressing")
 	return embedded.tolist(), vocab
 
 def get_cosine_list(articles, query):
 	vectors = get_wordvecs(articles)
-	return vectors.similar_by_word(word=query, topn=10)
+	return vectors.similar_by_word(word=query, topn=100)
 
 def get_phrase_connections(articles, main_phrase, tert_phrases, connections):
 	wv = get_wordvecs(articles)
