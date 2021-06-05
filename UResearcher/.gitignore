@@ -19,5 +19,5 @@ uresearcher_app/uresearcher.db
 
 # venv
 *venv*/
-
+venv/
 uresearcher_app/static/node/node_modules/
