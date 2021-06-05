@@ -107,7 +107,6 @@ def complete_update():
 
 def get_grant_data_points(grants):
 
-
 	result_floor = {}
 	result_ceil = {}
 

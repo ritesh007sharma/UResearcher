@@ -20,6 +20,3 @@ uresearcher_app/uresearcher.db
 # venv
 *venv*/
 
-# others
-uresearcher_app/static/node/node_modules/
-uresearcher_app/static/node/v8-compile-cache-0/

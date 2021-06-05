@@ -4,10 +4,8 @@ from gensim.test.utils import common_texts
 from sklearn.manifold import TSNE
 from nltk import tokenize
 from .preprocessing import sentence_parsing
-#from flask import jsonify
-
 import multiprocessing
-import time
+
 
 
 ## Aside from using the abstract/fulltext of an article, we need to split them into sentences before splitting into words
@@ -49,15 +47,12 @@ def get_wordvecs(articles):
 			#and feeding articles/sentences into the model in groups may be required for 
 			#fast multi-threading when the datasets are huge. 
 			article_sentences = tokenize.sent_tokenize(article['abstract'])
-			
+
+
 			for curr_sentence in article_sentences:
 			
 				preproc = sentence_parsing(curr_sentence)
-				"""
-				for s in article_sentences:
-					tokenized_ = nltk.word_tokenize(curr_sentence)
-					tuple_list = nltk.pos_tag(tokenized_)
-				"""
+
 				#sentences.append(tokenize.word_tokenize(preproc))
 				#print(tokenize.word_tokenize(curr_sentence))
 				
@@ -65,31 +60,20 @@ def get_wordvecs(articles):
 				sentences.append(preproc)
 				
 
-	print("start word2vec")
-
 	#https://radimrehurek.com/gensim/models/word2vec.html
 	#model = Word2Vec(sentences, min_count=3,vector_size=1000,max_vocab_size=2000,max_final_vocab=None,sorted_vocab=1,  workers=cores-1)
 	model = Word2Vec(sentences, min_count=3, vector_size=100,sorted_vocab=1,
 					 workers=cores - 1)
 	#model.build_vocab(sentences, progress_per=10000)
-	# we can edit the dictionary here to remove verb or some unnecsary word
-
-	#
-
 
 	return model.wv
 
 def get_vocablist(articles,filter):
-	i=0
 	vectors = get_wordvecs(articles)
 	vocab=[]
 	for word in vectors.index_to_key:
-		if i > 2000:
-			break
-
 		if filter.isValid(word):
 			vocab.append(word)
-			i+=1
 
 	return vocab
 
@@ -97,24 +81,19 @@ def get_vocablist(articles,filter):
 def get_2d_projection(articles,filter):
 	vectors = get_wordvecs(articles)
 	vocab = []
-	i=0
 	for word in vectors.index_to_key:
-		if i > 2000:
-			break
-
 		if filter.isValid(word):
 			vocab.append(word)
-			i += 1
 
 	wordvecs = []
 	for word in vocab:
-		#wordvecs.append(vectors[word].tolist())
 		wordvecs.append(vectors[word])
-	print("start compressing")
+
+	#print("start compressing")
 	embedded = TSNE(n_components=2).fit_transform(wordvecs)
-	print("end compressing")
+	#print("end compressing")
 	return embedded.tolist(), vocab
-	#return wordvecs,vocab
+
 def get_cosine_list(articles, query):
 	vectors = get_wordvecs(articles)
 	return vectors.similar_by_word(word=query, topn=100)
