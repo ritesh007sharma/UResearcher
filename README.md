@@ -1,4 +1,4 @@
-# UResearcher (by TEAMCOOLGUYS)
+# UResearcher
 
 <img src="UResearcher_LOGO/UResearcher_circle.png" width="200" height="200" alt="UResearcher_circle"/>
 
